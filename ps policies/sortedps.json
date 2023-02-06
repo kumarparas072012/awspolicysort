@@ -1,0 +1,100 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [ {
+		"Sid": "s3listbucketaccess",
+		"Effect": "Allow",
+		"Action": "s3:List*",
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}, {
+		"Sid": "S3ReadWriteAccess",
+		"Effect": "Allow",
+		"Action": ["s3:GetBucketAcl", "s3:GetBucketCORS", "s3:GetBucketLocation", "s3:GetBucketLogging", "s3:GetBucketNotification", "s3:GetBucketObjectLockConfiguration", "s3:GetBucketOwnershipControls", "s3:GetBucketPolicy", "s3:GetBucketPolicyStatus", "s3:GetBucketPublicAccessBlock", "s3:GetBucketRequestPayment", "s3:GetBucketTagging", "s3:GetBucketVersioning", "s3:GetBucketWebsite", "s3:ListBucket", "s3:ListBucketMultipartUploads", "s3:ListBucketVersions", "s3:PutBucketAcl", "s3:PutBucketCORS", "s3:PutBucketLogging", "s3:PutBucketNotification", "s3:PutBucketObjectLockConfiguration", "s3:PutBucketOwnershipControls", "s3:PutBucketPolicy", "s3:PutBucketPublicAccessBlock", "s3:PutBucketRequestPayment", "s3:PutBucketTagging", "s3:PutBucketVersioning"],
+		"Resource": ["arn:aws:s3:::awscli-files*", "arn:aws:s3:::syscloud-downloads", "arn:aws:s3:::syscloud-downloads/export/"]
+	}, {
+		"Sid": "SNSREADACCESS",
+		"Effect": "Allow",
+		"Action": ["sns:Get*", "sns:List*"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}, {
+		"Sid": "SQSReadAccess",
+		"Effect": "Allow",
+		"Action": ["sqs:GetQueueAttributes", "sqs:GetQueueUrl", "sqs:ListDeadLetterSourceQueues", "sqs:ListQueueTags", "sqs:ListQueues", "sqs:ReceiveMessage"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}, {
+		"Sid": "SSMForSpecificEC2Connect",
+		"Effect": "Allow",
+		"Action": ["ssm:DescribeInstanceInformation", "ssm:GetConnectionStatus", "ssm:StartSession", "ssm:TerminateSession"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:ResourceTag/Project": ["Backup", "microservices"]
+			}
+		}
+	}, {
+		"Sid": "SSMForSpecificEC2Connect1",
+		"Effect": "Allow",
+		"Action": ["ssm:DescribeInstanceInformation", "ssm:GetConnectionStatus", "ssm:StartSession", "ssm:TerminateSession"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:ResourceTag/Name": ["Unified*", "cloud*"]
+			}
+		}
+	}, {
+		"Sid": "SSMForSpecificEC2Connect3",
+		"Effect": "Allow",
+		"Action": ["ssm:DescribeInstanceInformation", "ssm:GetConnectionStatus", "ssm:StartSession", "ssm:TerminateSession"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:ResourceTag/Key": "Deployment*",
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}, {
+		"Sid": "SSMParaMeterStoreAccess",
+		"Effect": "Allow",
+		"Action": ["ssm:GetParameter", "ssm:GetParameterHistory", "ssm:GetParameters", "ssm:GetParametersByPath", "ssm:LabelParameterVersion", "ssm:PutParameter", "ssm:UnlabelParameterVersion"],
+		"Resource": ["arn:aws:ecs:*:538782569624:cluster/BK_*", "arn:aws:ecs:*:538782569624:cluster/IncrementalQueuePopulation", "arn:aws:ecs:*:538782569624:cluster/JobManager", "arn:aws:ecs:*:538782569624:cluster/Secretsmanager", "arn:aws:ecs:*:538782569624:cluster/network-drive-api", "arn:aws:ecs:*:724493240358:cluster/BK_*", "arn:aws:ecs:*:724493240358:cluster/IncrementalQueuePopulation", "arn:aws:ecs:*:724493240358:cluster/JobManager", "arn:aws:ecs:*:724493240358:cluster/Secretsmanager", "arn:aws:ecs:*:724493240358:cluster/network-drive-api", "arn:aws:ssm:*:*:parameter/ASG_Name/Instance_type,", "arn:aws:ssm:*:*:parameter/ASG_Name/ami", "arn:aws:ssm:*:*:parameter/BK_*", "arn:aws:ssm:*:*:parameter/CLOUDMOVER/*/*", "arn:aws:ssm:*:*:parameter/Config*/*", "arn:aws:ssm:*:*:parameter/Config/*/*", "arn:aws:ssm:*:*:parameter/Config/Backup/Google", "arn:aws:ssm:*:*:parameter/Config/Backup/Google/FeedSync", "arn:aws:ssm:*:*:parameter/Config/Backup/Google/OtherService", "arn:aws:ssm:*:*:parameter/Config/Backup/O365", "arn:aws:ssm:*:*:parameter/UnifiedBackup*", "arn:aws:ssm:*:538782569624:parameter/ASG_Name/Instance_type,", "arn:aws:ssm:*:538782569624:parameter/ASG_Name/ami", "arn:aws:ssm:*:538782569624:parameter/BK_*", "arn:aws:ssm:*:538782569624:parameter/Config/Backup/*", "arn:aws:ssm:*:538782569624:parameter/Config/Backup/Google", "arn:aws:ssm:*:538782569624:parameter/Config/Backup/Google/FeedSync", "arn:aws:ssm:*:538782569624:parameter/Config/Backup/Google/OtherService", "arn:aws:ssm:*:538782569624:parameter/Config/Backup/O365"]
+	}, {
+		"Sid": "SSmRead",
+		"Effect": "Allow",
+		"Action": ["ssm:Describe*"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}, {
+		"Sid": "statemachineSpecificAccess",
+		"Effect": "Allow",
+		"Action": ["states:DescribeExecution", "states:DescribeStateMachine", "states:DescribeStateMachineForExecution", "states:GetExecutionHistory", "states:ListExecutions", "states:StartExecution", "states:StopExecution"],
+		"Resource": ["arn:aws:states:*:*:execution:CreateAMIAndUpdateStack:*", "arn:aws:states:*:*:execution:LustreResize:*", "arn:aws:states:*:*:execution:lustreCreation:*", "arn:aws:states:*:*:execution:lustreDeletion:*", "arn:aws:states:*:*:execution:lustreReplacement:*", "arn:aws:states:*:*:stateMachine:CreateAMIAndUpdateStack", "arn:aws:states:*:*:stateMachine:LustreResize", "arn:aws:states:*:*:stateMachine:lustreCreation", "arn:aws:states:*:*:stateMachine:lustreDeletion", "arn:aws:states:*:*:stateMachine:lustreReplacement"]
+	}, {
+		"Sid": "StatesMachineReadAccess",
+		"Effect": "Allow",
+		"Action": ["states:ListStateMachines"],
+		"Resource": "*",
+		"Condition": {
+			"ForAnyValue:StringLike": {
+				"aws:PrincipalAccount": ["538782569624", "724493240358", "849689826459"]
+			}
+		}
+	}]
+}
