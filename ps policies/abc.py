@@ -15,7 +15,8 @@ def lambda_handler(event, context):
         sts = boto3.client('sts')
         accounts = [
             {"id": "712427214116", "role": "service-role/SSO-ENT-Update-role"},
-            {"id": "849689826459", "role": "SSO-DEV-Update-role"}
+            {"id": "849689826459", "role": "SSO-DEV-Update-role"},
+            {"id": "724493240358", "role": "service-role/UpdateSSOPolicies-CrossAccount-role-bl0lydga"}
         ]
         for account in accounts:
             acct_b = sts.assume_role(RoleArn=f"arn:aws:iam::{account['id']}:role/{account['role']}", RoleSessionName="LambdaPushSession")
@@ -33,5 +34,7 @@ def lambda_handler(event, context):
 def get_function_name(id):
      if(id=='712427214116'): 
           return "SSO-ENT-Update"
-     else: 
+     elif(id='849689826459'): 
           return "SSO-DEV-Update"
+     else  :
+            return "SSO-PROD-Update"

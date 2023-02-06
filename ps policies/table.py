@@ -3,15 +3,16 @@ import json
 
 def lambda_handler(event, context):
     # Connect to IAM client
-    client = boto3.client('iam')
+    iam = boto3.client('iam')
     
     # Get the policy document
-    response = client.get_policy(
+    response = iam.get_policy(
         PolicyArn='arn:aws:iam::538782569624:policy/Paras-Permission-Sets'
     )
+    policy_version = iam.get_policy_version(PolicyArn=arn, VersionId=policy['Policy']['DefaultVersionId'])
     
     # Load the JSON policy document into a dictionary
-    policy = json.loads(response['Policy']['Document'])
+    policy = json.dumps(policy_version['PolicyVersion']['Document'])
     
     # Connect to the RDS database
     conn = psycopg2.connect(
