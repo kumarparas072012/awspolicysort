@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Policy Analyzer Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header p {
+            color: #4a5568;
+            font-size: 1.1em;
+        }
+
+        .upload-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-input-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
+        }
+
+        .analyze-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .dashboard-card h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .risk-score {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .risk-meter {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .risk-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .risk-low { color: #48bb78; }
+        .risk-medium { color: #ed8936; }
+        .risk-high { color: #f56565; }
+
+        .issues-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .issue-item {
+            padding: 15px;
+            border-left: 4px solid;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+            background: #f7fafc;
+        }
+
+        .issue-critical { border-left-color: #e53e3e; background: #fed7d7; }
+        .issue-high { border-left-color: #dd6b20; background: #feebc8; }
+        .issue-medium { border-left-color: #d69e2e; background: #fefcbf; }
+        .issue-low { border-left-color: #38a169; background: #c6f6d5; }
+
+        .issue-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .issue-message {
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .issue-recommendation {
+            color: #2d3748;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .policy-viewer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .policy-content {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background: #2d3748;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #4a5568;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .recommendations {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendation-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #b2f5ea;
+        }
+
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+
+        .recommendation-priority {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .priority-critical { color: #e53e3e; }
+        .priority-high { color: #dd6b20; }
+        .priority-medium { color: #d69e2e; }
+        .priority-low { color: #38a169; }
+
+        .limits-summary { margin-bottom: 30px; }
+        .limits-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .limit-item { padding: 10px; background: #f8f9fa; border-radius: 6px; }
+        .size-bar { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin: 20px 0; }
+        .size-fill { height: 100%; transition: width 0.3s ease; }
+        .low-utilization { background: #28a745; }
+        .medium-utilization { background: #ffc107; }
+        .high-utilization { background: #dc3545; }
+        .good { color: #28a745; font-weight: bold; }
+        .caution { color: #ffc107; font-weight: bold; }
+        .warning { color: #dc3545; font-weight: bold; }
+        .compatibility-analysis { margin: 30px 0; }
+        .compatibility-types { display: grid; gap: 10px; }
+        .compatibility-item { padding: 10px; border-radius: 6px; }
+        .compatibility-item.compatible { background: #d4edda; color: #155724; }
+        .compatibility-item.incompatible { background: #f8d7da; color: #721c24; }
+        .limits-warnings { margin-top: 30px; }
+        .warning-item { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🛡️ AWS Policy Security Analyzer
+            </h1>
+            <p>Comprehensive security analysis and optimization for AWS IAM policies</p>
+        </div>
+
+        <div class="upload-section">
+            <h3>📤 Upload Policy</h3>
+            <div class="file-upload">
+                <div class="file-input-wrapper">
+                    <input type="file" id="policyFile" accept=".json" class="file-input">
+                    <label for="policyFile" class="file-input-button">
+                        📁 Choose JSON File
+                    </label>
+                </div>
+                <button id="analyzeBtn" class="analyze-btn" disabled>
+                    🔍 Analyze Policy
+                </button>
+                <span id="fileName" style="color: #4a5568;"></span>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing policy security...</p>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>🎯 Risk Assessment</h3>
+                    <div class="risk-score">
+                        <div class="risk-meter">
+                            <canvas id="riskMeter" width="150" height="150"></canvas>
+                        </div>
+                        <div id="riskNumber" class="risk-number">0</div>
+                        <div id="riskLevel">Risk Score</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>📊 Policy Summary</h3>
+                    <div id="summaryStats" class="summary-stats">
+                        <!-- Stats will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>📈 Action Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="actionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>🔧 Issue Breakdown</h3>
+                    <div class="chart-container">
+                        <canvas id="issueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card full-width">
+                <div class="tabs">
+                    <button class="tab active" data-tab="issues">🚨 Security Issues</button>
+                    <button class="tab" data-tab="optimizations">💡 Optimizations</button>
+                    <button class="tab" data-tab="recommendations">📋 Recommendations</button>
+                    <button class="tab" data-tab="compliance">✅ Compliance</button>
+                    <button class="tab" data-tab="limits">📏 AWS Limits</button>
+                </div>
+
+                <div id="issues" class="tab-content active">
+                    <div id="issuesList" class="issues-list">
+                        <!-- Issues will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="optimizations" class="tab-content">
+                    <div id="optimizationsList" class="issues-list">
+                        <!-- Optimizations will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="recommendations" class="tab-content">
+                    <div id="recommendationsList">
+                        <!-- Recommendations will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="compliance" class="tab-content">
+                    <div id="complianceList">
+                        <!-- Compliance checks will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="limits" class="tab-content">
+                    <div id="limitsAnalysis">
+                        <!-- AWS limits analysis will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="policy-viewer">
+                <h3>📄 Policy Content</h3>
+                <div class="policy-content">
+                    <pre><code id="policyContent" class="language-json"></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class PolicyAnalyzerDashboard {
+            constructor() {
+                this.initializeEventListeners();
+                this.policyData = null;
+                this.analysisResults = null;
+            }
+
+            initializeEventListeners() {
+                document.getElementById('policyFile').addEventListener('change', this.handleFileSelect.bind(this));
+                document.getElementById('analyzeBtn').addEventListener('click', this.analyzePolicy.bind(this));
+                
+                // Tab switching
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.switchTab(e.target.dataset.tab);
+                    });
+                });
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    document.getElementById('fileName').textContent = file.name;
+                    document.getElementById('analyzeBtn').disabled = false;
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            this.policyData = JSON.parse(e.target.result);
+                            this.displayPolicyContent();
+                        } catch (error) {
+                            alert('Invalid JSON file');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            }
+
+            displayPolicyContent() {
+                const policyContent = document.getElementById('policyContent');
+                policyContent.textContent = JSON.stringify(this.policyData, null, 2);
+                Prism.highlightElement(policyContent);
+            }
+
+            async analyzePolicy() {
+                if (!this.policyData) return;
+
+                this.showLoading();
+                
+                // Simulate the policy analyzer (in real implementation, this would call the backend)
+                setTimeout(() => {
+                    this.analysisResults = this.mockAnalysis(this.policyData);
+                    this.displayResults();
+                    this.hideLoading();
+                }, 2000);
+            }
+
+            mockAnalysis(policy) {
+                // This simulates the PolicySecurityAnalyzer results
+                const statements = policy.Statement || [];
+                const securityIssues = [];
+                const optimizationSuggestions = [];
+                
+                statements.forEach((stmt, index) => {
+                    const statementId = stmt.Sid || `Statement-${index + 1}`;
+                    
+                    // Check for wildcard usage
+                    if (stmt.Action) {
+                        const actions = Array.isArray(stmt.Action) ? stmt.Action : [stmt.Action];
+                        actions.forEach(action => {
+                            if (action === '*') {
+                                securityIssues.push({
+                                    type: 'CRITICAL',
+                                    category: 'Wildcard Usage',
+                                    statementId,
+                                    message: 'Statement allows all actions (*) which is extremely dangerous',
+                                    recommendation: 'Restrict to specific actions needed'
+                                });
+                            } else if (action.includes('*')) {
+                                securityIssues.push({
+                                    type: 'HIGH',
+                                    category: 'Wildcard Usage',
+                                    statementId,
+                                    message: `Action contains wildcard: ${action}`,
+                                    recommendation: 'Consider using specific actions instead of wildcards'
+                                });
+                            }
+                        });
+                    }
+                    
+                    // Check for resource wildcards
+                    if (stmt.Resource === '*') {
+                        securityIssues.push({
+                            type: 'HIGH',
+                            category: 'Resource Wildcard',
+                            statementId,
+                            message: 'Statement allows access to all resources (*)',
+                            recommendation: 'Limit to specific resources or use resource conditions'
+                        });
+                    }
+                    
+                    // Check for missing conditions
+                    if (stmt.Effect === 'Allow' && !stmt.Condition) {
+                        securityIssues.push({
+                            type: 'MEDIUM',
+                            category: 'Missing Conditions',
+                            statementId,
+                            message: 'Statement lacks conditions which could be security risk',
+                            recommendation: 'Add appropriate conditions to restrict access'
+                        });
+                    }
+                });
+
+                const riskScore = Math.min(securityIssues.length * 5 + Math.random() * 20, 100);
+                
+                return {
+                    securityIssues,
+                    optimizationSuggestions,
+                    riskScore: Math.round(riskScore),
+                    summary: {
+                        totalStatements: statements.length,
+                        totalActions: statements.reduce((count, stmt) => {
+                            if (stmt.Action) {
+                                return count + (Array.isArray(stmt.Action) ? stmt.Action.length : 1);
+                            }
+                            return count;
+                        }, 0),
+                        allowStatements: statements.filter(s => s.Effect === 'Allow').length,
+                        denyStatements: statements.filter(s => s.Effect === 'Deny').length,
+                        statementsWithConditions: statements.filter(s => s.Condition).length,
+                        wildcardActions: statements.filter(s => {
+                            if (s.Action) {
+                                const actions = Array.isArray(s.Action) ? s.Action : [s.Action];
+                                return actions.some(a => a && a.includes('*'));
+                            }
+                            return false;
+                        }).length
+                    },
+                    recommendations: [
+                        {
+                            priority: 'HIGH',
+                            action: 'Review wildcard permissions',
+                            description: 'Several statements use wildcard permissions that should be restricted'
+                        },
+                        {
+                            priority: 'MEDIUM',
+                            action: 'Add condition blocks',
+                            description: 'Consider adding conditions to statements for better security'
+                        }
+                    ],
+                    complianceChecks: {
+                        leastPrivilege: { compliant: riskScore < 30, violations: Math.floor(riskScore / 10) },
+                        principleOfSeparation: { compliant: true, violations: 0 },
+                        conditionalAccess: { compliant: riskScore < 50, violations: Math.floor(riskScore / 20) },
+                        resourceRestriction: { compliant: riskScore < 40, violations: Math.floor(riskScore / 15) }
+                    }
+                };
+            }
+
+            displayResults() {
+                document.getElementById('results').classList.remove('hidden');
+                
+                this.displayRiskScore();
+                this.displaySummaryStats();
+                this.displayIssues();
+                this.displayOptimizations();
+                this.displayRecommendations();
+                this.displayCompliance();
+                this.displayLimitsAnalysis();
+                this.displayCharts();
+            }
+
+            displayRiskScore() {
+                const riskScore = this.analysisResults.riskScore;
+                const riskNumber = document.getElementById('riskNumber');
+                const riskLevel = document.getElementById('riskLevel');
+                
+                riskNumber.textContent = riskScore;
+                
+                let riskClass, riskText;
+                if (riskScore < 30) {
+                    riskClass = 'risk-low';
+                    riskText = 'Low Risk';
+                } else if (riskScore < 70) {
+                    riskClass = 'risk-medium';
+                    riskText = 'Medium Risk';
+                } else {
+                    riskClass = 'risk-high';
+                    riskText = 'High Risk';
+                }
+                
+                riskNumber.className = `risk-number ${riskClass}`;
+                riskLevel.textContent = riskText;
+                
+                this.drawRiskMeter(riskScore);
+            }
+
+            drawRiskMeter(score) {
+                const canvas = document.getElementById('riskMeter');
+                const ctx = canvas.getContext('2d');
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = 60;
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Background circle
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 8;
+                ctx.stroke();
+                
+                // Score arc
+                const endAngle = (score / 100) * 2 * Math.PI;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, -Math.PI / 2, -Math.PI / 2 + endAngle);
+                
+                if (score < 30) {
+                    ctx.strokeStyle = '#48bb78';
+                } else if (score < 70) {
+                    ctx.strokeStyle = '#ed8936';
+                } else {
+                    ctx.strokeStyle = '#f56565';
+                }
+                
+                ctx.lineWidth = 8;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+
+            displaySummaryStats() {
+                const summary = this.analysisResults.summary;
+                const container = document.getElementById('summaryStats');
+                
+                container.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-number">${summary.totalStatements}</div>
+                        <div class="stat-label">Statements</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${summary.totalActions}</div>
+                        <div class="stat-label">Actions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${summary.allowStatements}</div>
+                        <div class="stat-label">Allow</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">${summary.statementsWithConditions}</div>
+                        <div class="stat-label">With Conditions</div>
+                    </div>
+                `;
+            }
+
+            displayIssues() {
+                const container = document.getElementById('issuesList');
+                const issues = this.analysisResults.securityIssues;
+                
+                if (issues.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #48bb78; padding: 40px;">🎉 No security issues found!</p>';
+                    return;
+                }
+                
+                container.innerHTML = issues.map(issue => `
+                    <div class="issue-item issue-${issue.type.toLowerCase()}">
+                        <div class="issue-header">[${issue.type}] ${issue.category} - ${issue.statementId}</div>
+                        <div class="issue-message">${issue.message}</div>
+                        <div class="issue-recommendation">💡 ${issue.recommendation}</div>
+                    </div>
+                `).join('');
+            }
+
+            displayOptimizations() {
+                const container = document.getElementById('optimizationsList');
+                const optimizations = this.analysisResults.optimizationSuggestions;
+                
+                if (optimizations.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #48bb78; padding: 40px;">✨ Policy is well optimized!</p>';
+                    return;
+                }
+                
+                container.innerHTML = optimizations.map(opt => `
+                    <div class="issue-item issue-low">
+                        <div class="issue-header">${opt.category} - ${opt.statementId}</div>
+                        <div class="issue-message">${opt.message}</div>
+                        <div class="issue-recommendation">💡 ${opt.recommendation}</div>
+                    </div>
+                `).join('');
+            }
+
+            displayRecommendations() {
+                const container = document.getElementById('recommendationsList');
+                const recommendations = this.analysisResults.recommendations;
+                
+                container.innerHTML = recommendations.map(rec => `
+                    <div class="recommendation-item">
+                        <div class="recommendation-priority priority-${rec.priority.toLowerCase()}">
+                            ${rec.priority} Priority: ${rec.action}
+                        </div>
+                        <div>${rec.description}</div>
+                    </div>
+                `).join('');
+            }
+
+            displayCompliance() {
+                const container = document.getElementById('complianceList');
+                const compliance = this.analysisResults.complianceChecks;
+                
+                container.innerHTML = Object.entries(compliance).map(([check, result]) => `
+                    <div class="issue-item ${result.compliant ? 'issue-low' : 'issue-medium'}">
+                        <div class="issue-header">
+                            ${result.compliant ? '✅' : '⚠️'} ${this.formatCheckName(check)}
+                        </div>
+                        <div class="issue-message">
+                            Status: ${result.compliant ? 'Compliant' : 'Non-compliant'}
+                            ${result.violations > 0 ? `(${result.violations} violations)` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            displayLimitsAnalysis() {
+                const container = document.getElementById('limitsAnalysis');
+                
+                // Mock AWS limits analysis (in real implementation, this would use the backend)
+                const limitsData = this.mockLimitsAnalysis();
+                
+                container.innerHTML = `
+                    <div class="limits-summary">
+                        <h3>📊 Size Analysis</h3>
+                        <div class="limits-metrics">
+                            <div class="limit-item">
+                                <strong>Current Size:</strong> ${limitsData.currentSize} bytes
+                            </div>
+                            <div class="limit-item">
+                                <strong>Policy Type:</strong> ${limitsData.policyType}
+                            </div>
+                            <div class="limit-item">
+                                <strong>Size Limit:</strong> ${limitsData.sizeLimit} bytes
+                            </div>
+                            <div class="limit-item">
+                                <strong>Utilization:</strong> 
+                                <span class="${limitsData.utilizationClass}">${limitsData.utilization}%</span>
+                            </div>
+                            <div class="limit-item">
+                                <strong>Remaining:</strong> ${limitsData.remaining} bytes
+                            </div>
+                            <div class="limit-item">
+                                <strong>Status:</strong> 
+                                <span class="${limitsData.statusClass}">${limitsData.status}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="size-bar">
+                            <div class="size-fill ${limitsData.utilizationClass}" style="width: ${limitsData.utilization}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="compatibility-analysis">
+                        <h3>🎯 AWS Compatibility</h3>
+                        <div class="compatibility-types">
+                            ${limitsData.compatibleTypes.map(type => `
+                                <div class="compatibility-item compatible">
+                                    ✅ ${type.name}: ${type.utilization}% utilization
+                                </div>
+                            `).join('')}
+                            ${limitsData.incompatibleTypes.map(type => `
+                                <div class="compatibility-item incompatible">
+                                    ❌ ${type.name}: ${type.utilization}% (exceeds limit)
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    ${limitsData.warnings.length > 0 ? `
+                        <div class="limits-warnings">
+                            <h3>⚠️ Warnings</h3>
+                            ${limitsData.warnings.map(warning => `
+                                <div class="warning-item">
+                                    <strong>${warning.type}:</strong> ${warning.message}
+                                    ${warning.recommendation ? `<br><em>💡 ${warning.recommendation}</em>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            mockLimitsAnalysis() {
+                // Simulate limits analysis based on policy size
+                const policyString = JSON.stringify(this.policyData);
+                const currentSize = new Blob([policyString]).size;
+                
+                const limits = {
+                    managedPolicy: 6144,
+                    inlinePolicy: 2048,
+                    assumeRolePolicy: 2048
+                };
+                
+                const utilization = Math.round((currentSize / limits.managedPolicy) * 100);
+                
+                let utilizationClass, statusClass, status;
+                if (utilization > 90) {
+                    utilizationClass = 'high-utilization';
+                    statusClass = 'warning';
+                    status = utilization > 100 ? 'EXCEEDS LIMITS' : 'HIGH UTILIZATION';
+                } else if (utilization > 75) {
+                    utilizationClass = 'medium-utilization';
+                    statusClass = 'caution';
+                    status = 'MEDIUM UTILIZATION';
+                } else {
+                    utilizationClass = 'low-utilization';
+                    statusClass = 'good';
+                    status = 'WITHIN LIMITS';
+                }
+                
+                const compatibleTypes = [];
+                const incompatibleTypes = [];
+                
+                Object.entries(limits).forEach(([type, limit]) => {
+                    const typeUtilization = Math.round((currentSize / limit) * 100);
+                    const typeInfo = {
+                        name: type.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                        utilization: typeUtilization
+                    };
+                    
+                    if (typeUtilization <= 100) {
+                        compatibleTypes.push(typeInfo);
+                    } else {
+                        incompatibleTypes.push(typeInfo);
+                    }
+                });
+                
+                const warnings = [];
+                if (utilization > 75) {
+                    warnings.push({
+                        type: 'High Size Utilization',
+                        message: `Policy using ${utilization}% of size limit`,
+                        recommendation: 'Monitor policy size when adding new permissions'
+                    });
+                }
+                
+                return {
+                    currentSize,
+                    policyType: 'Managed Policy',
+                    sizeLimit: limits.managedPolicy,
+                    utilization,
+                    utilizationClass,
+                    remaining: limits.managedPolicy - currentSize,
+                    status,
+                    statusClass,
+                    compatibleTypes,
+                    incompatibleTypes,
+                    warnings
+                };
+            }
+
+            formatCheckName(checkName) {
+                return checkName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+            }
+
+            displayCharts() {
+                this.createActionChart();
+                this.createIssueChart();
+            }
+
+            createActionChart() {
+                const ctx = document.getElementById('actionChart').getContext('2d');
+                const summary = this.analysisResults.summary;
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Allow Statements', 'Deny Statements', 'With Conditions'],
+                        datasets: [{
+                            data: [summary.allowStatements, summary.denyStatements, summary.statementsWithConditions],
+                            backgroundColor: ['#48bb78', '#f56565', '#667eea'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            createIssueChart() {
+                const ctx = document.getElementById('issueChart').getContext('2d');
+                const issues = this.analysisResults.securityIssues;
+                
+                const issueCounts = {
+                    CRITICAL: issues.filter(i => i.type === 'CRITICAL').length,
+                    HIGH: issues.filter(i => i.type === 'HIGH').length,
+                    MEDIUM: issues.filter(i => i.type === 'MEDIUM').length,
+                    LOW: issues.filter(i => i.type === 'LOW').length
+                };
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Critical', 'High', 'Medium', 'Low'],
+                        datasets: [{
+                            label: 'Security Issues',
+                            data: [issueCounts.CRITICAL, issueCounts.HIGH, issueCounts.MEDIUM, issueCounts.LOW],
+                            backgroundColor: ['#e53e3e', '#dd6b20', '#d69e2e', '#38a169']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            switchTab(tabName) {
+                // Update tab buttons
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                
+                // Update tab content
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+            }
+
+            showLoading() {
+                document.getElementById('loadingIndicator').classList.remove('hidden');
+                document.getElementById('results').classList.add('hidden');
+            }
+
+            hideLoading() {
+                document.getElementById('loadingIndicator').classList.add('hidden');
+            }
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            new PolicyAnalyzerDashboard();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+{
+  "timestamp": "2025-09-19T12:28:36.679Z",
+  "policyAnalysis": {
+    "securityIssues": [
+      {
+        "type": "HIGH",
+        "category": "Wildcard Usage",
+        "statementId": "s3listbucketaccess",
+        "action": "s3:List*",
+        "message": "Action contains wildcard: s3:List*",
+        "recommendation": "Consider using specific actions instead of wildcards"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "s3listbucketaccess",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "s3listbucketaccess",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      },
+      {
+        "type": "HIGH",
+        "category": "Wildcard Usage",
+        "statementId": "SNSREADACCESS",
+        "action": "sns:Get*",
+        "message": "Action contains wildcard: sns:Get*",
+        "recommendation": "Consider using specific actions instead of wildcards"
+      },
+      {
+        "type": "HIGH",
+        "category": "Wildcard Usage",
+        "statementId": "SNSREADACCESS",
+        "action": "sns:List*",
+        "message": "Action contains wildcard: sns:List*",
+        "recommendation": "Consider using specific actions instead of wildcards"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SNSREADACCESS",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "SNSREADACCESS",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SQSReadAccess",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "SQSReadAccess",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SSMForSpecificEC2Connect",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SSMForSpecificEC2Connect1",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SSMForSpecificEC2Connect3",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "SSMForSpecificEC2Connect3",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      },
+      {
+        "type": "HIGH",
+        "category": "Wildcard Usage",
+        "statementId": "SSmRead",
+        "action": "ssm:Describe*",
+        "message": "Action contains wildcard: ssm:Describe*",
+        "recommendation": "Consider using specific actions instead of wildcards"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "SSmRead",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "SSmRead",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      },
+      {
+        "type": "HIGH",
+        "category": "Resource Wildcard",
+        "statementId": "StatesMachineReadAccess",
+        "message": "Statement allows access to all resources (*)",
+        "recommendation": "Limit to specific resources or use resource conditions"
+      },
+      {
+        "type": "MEDIUM",
+        "category": "Cross-Account Access",
+        "statementId": "StatesMachineReadAccess",
+        "message": "Statement allows access from 3 different AWS accounts",
+        "accounts": [
+          "538782569624",
+          "724493240358",
+          "849689826459"
+        ],
+        "recommendation": "Verify all cross-account access is intentional and necessary"
+      }
+    ],
+    "optimizationSuggestions": [
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "s3listbucketaccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Statement Complexity",
+        "statementId": "S3ReadWriteAccess",
+        "message": "Statement contains 28 actions",
+        "recommendation": "Consider splitting into multiple focused statements"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "S3ReadWriteAccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SNSREADACCESS",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SQSReadAccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SSMForSpecificEC2Connect",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SSMForSpecificEC2Connect1",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SSMForSpecificEC2Connect3",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SSMParaMeterStoreAccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "SSmRead",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "statemachineSpecificAccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      },
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "StatesMachineReadAccess",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      }
+    ],
+    "riskScore": 72,
+    "summary": {
+      "totalStatements": 11,
+      "totalActions": 65,
+      "allowStatements": 11,
+      "denyStatements": 0,
+      "statementsWithConditions": 8,
+      "wildcardActions": 3
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "action": "Immediate review required",
+      "description": "Policy has high risk score and needs immediate attention"
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "Optimize policy structure",
+      "description": "Consider consolidating statements and removing duplicates"
+    }
+  ],
+  "complianceChecks": {
+    "leastPrivilege": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks if policy follows least privilege principle"
+    },
+    "principleOfSeparation": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks for separation between administrative and operational permissions"
+    },
+    "conditionalAccess": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks if privileged actions have appropriate conditions"
+    },
+    "resourceRestriction": {
+      "compliant": false,
+      "violations": 8,
+      "description": "Checks if resources are properly restricted"
+    }
+  }
+}

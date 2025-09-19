@@ -1,0 +1,47 @@
+{
+  "timestamp": "2025-09-19T12:28:49.519Z",
+  "policyAnalysis": {
+    "securityIssues": [],
+    "optimizationSuggestions": [
+      {
+        "type": "OPTIMIZATION",
+        "category": "Duplicate Statement",
+        "statementId": "ComplianceTest",
+        "message": "Potential duplicate or overlapping statement detected",
+        "recommendation": "Review for consolidation opportunities"
+      }
+    ],
+    "riskScore": 0,
+    "summary": {
+      "totalStatements": 1,
+      "totalActions": 1,
+      "allowStatements": 1,
+      "denyStatements": 0,
+      "statementsWithConditions": 1,
+      "wildcardActions": 0
+    }
+  },
+  "recommendations": [],
+  "complianceChecks": {
+    "leastPrivilege": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks if policy follows least privilege principle"
+    },
+    "principleOfSeparation": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks for separation between administrative and operational permissions"
+    },
+    "conditionalAccess": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks if privileged actions have appropriate conditions"
+    },
+    "resourceRestriction": {
+      "compliant": true,
+      "violations": 0,
+      "description": "Checks if resources are properly restricted"
+    }
+  }
+}

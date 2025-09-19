@@ -1,13 +1,54 @@
 {
-  "name": "ps-policies",
-  "version": "1.0.0",
-  "description": "",
-  "main": "sortPermissions.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "node sortPermissions.js"
+  "name": "aws-policy-analyzer",
+  "version": "2.0.0",
+  "description": "Comprehensive AWS IAM Policy Analysis, Security Scanner, and Optimization Tool",
+  "main": "cli.js",
+  "bin": {
+    "policy-analyzer": "./cli.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "start": "node cli.js",
+    "analyze": "node cli.js analyze",
+    "compare": "node cli.js compare",
+    "optimize": "node cli.js optimize",
+    "sort": "node sortPermissions.js",
+    "check-limits": "node cli.js check-limits",
+    "limits": "node policyLimitValidator.js",
+    "dashboard": "open dashboard.html",
+    "test": "node test.js",
+    "install-global": "npm install -g .",
+    "dev": "nodemon cli.js"
+  },
+  "keywords": [
+    "aws",
+    "iam",
+    "policy",
+    "security",
+    "analysis",
+    "optimization",
+    "cli",
+    "dashboard"
+  ],
+  "author": "AWS Policy Analyzer Team",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1",
+    "inquirer": "^8.2.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/aws-policy-analyzer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/aws-policy-analyzer/issues"
+  },
+  "homepage": "https://github.com/your-org/aws-policy-analyzer#readme"
 }

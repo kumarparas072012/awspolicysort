@@ -1,0 +1,356 @@
+{
+  "timestamp": "2025-09-19T12:34:50.400Z",
+  "policyType": "managedPolicy",
+  "validation": {
+    "policyType": "managedPolicy",
+    "isValid": true,
+    "sizeAnalysis": {
+      "currentSize": 5429,
+      "limit": 6144,
+      "withinLimit": true,
+      "utilization": 88.36,
+      "remainingBytes": 715,
+      "compressionPotential": {
+        "estimatedBytes": 2689,
+        "percentage": 49.53
+      },
+      "breakdown": {
+        "version": 20,
+        "statements": 5380,
+        "statementBreakdown": [
+          {
+            "index": 0,
+            "sid": "s3listbucketaccess",
+            "size": 191,
+            "percentage": 3.54,
+            "components": {
+              "effect": 14,
+              "action": 17,
+              "resource": 12,
+              "condition": 108,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 1,
+            "sid": "S3ReadWriteAccess",
+            "size": 887,
+            "percentage": 16.43,
+            "components": {
+              "effect": 14,
+              "action": 722,
+              "resource": 115,
+              "condition": 0,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 2,
+            "sid": "SNSREADACCESS",
+            "size": 200,
+            "percentage": 3.7,
+            "components": {
+              "effect": 14,
+              "action": 31,
+              "resource": 12,
+              "condition": 108,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 3,
+            "sid": "SQSReadAccess",
+            "size": 311,
+            "percentage": 5.76,
+            "components": {
+              "effect": 14,
+              "action": 142,
+              "resource": 12,
+              "condition": 108,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 4,
+            "sid": "SSMForSpecificEC2Connect",
+            "size": 273,
+            "percentage": 5.06,
+            "components": {
+              "effect": 14,
+              "action": 110,
+              "resource": 12,
+              "condition": 91,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 5,
+            "sid": "SSMForSpecificEC2Connect1",
+            "size": 266,
+            "percentage": 4.93,
+            "components": {
+              "effect": 14,
+              "action": 110,
+              "resource": 12,
+              "condition": 83,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 6,
+            "sid": "SSMForSpecificEC2Connect3",
+            "size": 327,
+            "percentage": 6.06,
+            "components": {
+              "effect": 14,
+              "action": 110,
+              "resource": 12,
+              "condition": 144,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 7,
+            "sid": "SSMParaMeterStoreAccess",
+            "size": 1743,
+            "percentage": 32.28,
+            "components": {
+              "effect": 14,
+              "action": 176,
+              "resource": 1511,
+              "condition": 0,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 8,
+            "sid": "SSmRead",
+            "size": 187,
+            "percentage": 3.46,
+            "components": {
+              "effect": 14,
+              "action": 24,
+              "resource": 12,
+              "condition": 108,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 9,
+            "sid": "statemachineSpecificAccess",
+            "size": 781,
+            "percentage": 14.46,
+            "components": {
+              "effect": 14,
+              "action": 207,
+              "resource": 515,
+              "condition": 0,
+              "principal": 0,
+              "other": 0
+            }
+          },
+          {
+            "index": 10,
+            "sid": "StatesMachineReadAccess",
+            "size": 214,
+            "percentage": 3.96,
+            "components": {
+              "effect": 14,
+              "action": 35,
+              "resource": 12,
+              "condition": 108,
+              "principal": 0,
+              "other": 0
+            }
+          }
+        ]
+      }
+    },
+    "structureAnalysis": {
+      "statementCount": 11,
+      "exceedsStatementLimit": false,
+      "averageStatementSize": 489,
+      "largestStatement": {
+        "index": 7,
+        "sid": "SSMParaMeterStoreAccess",
+        "size": 1743
+      },
+      "smallestStatement": {
+        "index": 8,
+        "sid": "SSmRead",
+        "size": 187
+      },
+      "statementSizeDistribution": [
+        {
+          "index": 7,
+          "sid": "SSMParaMeterStoreAccess",
+          "size": 1743
+        },
+        {
+          "index": 1,
+          "sid": "S3ReadWriteAccess",
+          "size": 887
+        },
+        {
+          "index": 9,
+          "sid": "statemachineSpecificAccess",
+          "size": 781
+        },
+        {
+          "index": 6,
+          "sid": "SSMForSpecificEC2Connect3",
+          "size": 327
+        },
+        {
+          "index": 3,
+          "sid": "SQSReadAccess",
+          "size": 311
+        },
+        {
+          "index": 4,
+          "sid": "SSMForSpecificEC2Connect",
+          "size": 273
+        },
+        {
+          "index": 5,
+          "sid": "SSMForSpecificEC2Connect1",
+          "size": 266
+        },
+        {
+          "index": 10,
+          "sid": "StatesMachineReadAccess",
+          "size": 214
+        },
+        {
+          "index": 2,
+          "sid": "SNSREADACCESS",
+          "size": 200
+        },
+        {
+          "index": 0,
+          "sid": "s3listbucketaccess",
+          "size": 191
+        },
+        {
+          "index": 8,
+          "sid": "SSmRead",
+          "size": 187
+        }
+      ]
+    },
+    "stringLengthAnalysis": {
+      "violations": [],
+      "warnings": []
+    },
+    "arrayLimitAnalysis": {
+      "violations": [],
+      "warnings": []
+    },
+    "awsCompatibility": {
+      "isCompatible": true,
+      "recommendedType": "managedPolicy",
+      "alternativeTypes": [
+        {
+          "type": "managedPolicy",
+          "description": "Customer Managed Policy",
+          "sizeUtilization": 88.36
+        },
+        {
+          "type": "awsManagedPolicy",
+          "description": "AWS Managed Policy",
+          "sizeUtilization": 88.36
+        }
+      ],
+      "optimizationSuggestions": []
+    },
+    "recommendations": [
+      {
+        "type": "SIZE_OPTIMIZATION",
+        "message": "Consider optimizing policy to fit inline policy limits",
+        "benefit": "Enable use as inline policy for simpler management"
+      }
+    ],
+    "warnings": [
+      {
+        "type": "MEDIUM_SIZE_UTILIZATION",
+        "message": "Policy using 88.4% of size limit",
+        "recommendation": "Monitor policy size when adding new permissions"
+      },
+      {
+        "type": "LARGE_STATEMENT",
+        "message": "Statement 'SSMParaMeterStoreAccess' is 1743 bytes (very large)",
+        "recommendation": "Consider splitting large statements for better maintainability"
+      }
+    ],
+    "errors": []
+  },
+  "optimizationOpportunities": [
+    {
+      "type": "STATEMENT_CONSOLIDATION",
+      "description": "Multiple statements could potentially be consolidated",
+      "potentialSavings": "Estimated 10-30% size reduction",
+      "effort": "Medium"
+    },
+    {
+      "type": "WILDCARD_CONSOLIDATION",
+      "description": "4 opportunities for wildcard consolidation",
+      "potentialSavings": "Estimated 5-15% size reduction",
+      "effort": "Low",
+      "securityNote": "Review security implications before applying wildcards"
+    },
+    {
+      "type": "FORMAT_OPTIMIZATION",
+      "description": "Policy formatting can be optimized",
+      "potentialSavings": "2689 bytes (49.53%)",
+      "effort": "Low"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Optimization",
+      "title": "High Size Utilization",
+      "description": "Policy uses 88.36% of size limit",
+      "actions": [
+        "Monitor policy size when adding permissions",
+        "Regular policy review and cleanup",
+        "Consider policy splitting strategy"
+      ]
+    }
+  ],
+  "sizingGuidance": {
+    "currentStatus": {
+      "size": 5429,
+      "utilization": 88.36,
+      "type": "managedPolicy"
+    },
+    "recommendations": [
+      {
+        "type": "SHORT_TERM",
+        "message": "Limited space remaining - plan optimization",
+        "action": "Schedule policy optimization within next sprint"
+      }
+    ],
+    "futureConsiderations": [
+      {
+        "scenario": "Adding 10 more permissions",
+        "estimatedGrowth": "200-500 bytes",
+        "feasible": true
+      },
+      {
+        "scenario": "Adding new service permissions",
+        "estimatedGrowth": "300-800 bytes per service",
+        "feasible": false
+      }
+    ]
+  }
+}
