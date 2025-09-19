@@ -861,7 +861,13 @@ if (require.main === module) {
             console.log('🤖 AI-Powered Policy Recommendations');
             console.log('====================================\n');
             
+            console.log('🔄 Analyzing policy structure...');
+            console.log('🧠 Running AI analysis engines...');
+            console.log('📊 Generating strategic recommendations...');
+            
             const recommendations = await engine.generateRecommendations(policyData, context);
+            
+            console.log('✅ Analysis complete!\n');
             
             console.log('📊 Recommendation Summary:');
             console.log(`Analysis ID: ${recommendations.analysisId}`);
